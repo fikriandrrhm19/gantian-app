@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
+import 'views/login/login_view.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -12,10 +13,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gantian',
       debugShowCheckedModeBanner: false,
-      
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xffFAF8FF), // Background utama
-        primaryColor: const Color(0xff2563EB), // Warna biru utama
+        scaffoldBackgroundColor: const Color(0xffFAF8FF),
+        primaryColor: const Color(0xff2563EB),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xff2563EB),
           primary: const Color(0xff2563EB),
@@ -23,25 +23,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: 'sans-serif', 
       ),
-      
-      home: const LoginScreenPlaceholder(),
-    );
-  }
-}
-
-class LoginScreenPlaceholder extends StatelessWidget {
-  const LoginScreenPlaceholder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text(
-          'Proyek Gantian Berhasil Disetup!\nReady untuk Slicing Langkah 2.',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ),
+      home: const LoginView(),
     );
   }
 }
