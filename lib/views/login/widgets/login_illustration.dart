@@ -48,7 +48,7 @@ class LoginIllustration extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w800,
-                            fontFamily: 'sans-serif',
+                            fontFamily: 'Plus Jakarta Sans',
                           ),
                           children: [
                             TextSpan(text: 'Gantian', style: TextStyle(color: Color(0xff0F172A))),

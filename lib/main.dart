@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           primary: const Color(0xff2563EB),
           secondary: const Color(0xff0057C2),
         ),
-        fontFamily: 'sans-serif', 
+        fontFamily: 'Plus Jakarta Sans', 
       ),
       home: const LoginView(),
     );
