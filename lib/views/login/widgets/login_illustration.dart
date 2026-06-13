@@ -1,8 +1,35 @@
 import 'package:flutter/material.dart';
 import '../../../components/floating_icon.dart';
+import 'dart:async';
 
-class LoginIllustration extends StatelessWidget {
+class LoginIllustration extends StatefulWidget {
   const LoginIllustration({super.key});
+
+  @override
+  State<LoginIllustration> createState() => _LoginIllustrationState();
+}
+
+class _LoginIllustrationState extends State<LoginIllustration> {
+  bool _isUp = false;
+  Timer? _animationTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationTimer = Timer.periodic(const Duration(milliseconds: 2000), (timer) {
+      if (mounted) {
+        setState(() {
+          _isUp = !_isUp;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,26 +120,34 @@ class LoginIllustration extends StatelessWidget {
                 ],
               ),
             ),
-            // --- FLOATING ICONS COORD ---
-            Positioned(
-              top: 115,
+            
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 3400),
+              curve: Curves.easeInOut,
+              top: _isUp ? 120 : 110,
               left: 38,
-              child: FloatingIcon(iconData: Icons.store, iconColor: const Color(0xff0057C2)),
+              child: const FloatingIcon(iconData: Icons.store, iconColor: Color.fromRGBO(0, 87, 194, 1)),
             ),
-            Positioned(
-              top: 77,
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 3200),
+              curve: Curves.easeInOut,
+              top: _isUp ? 70 : 80,
               right: 52,
-              child: FloatingIcon(iconData: Icons.qr_code_scanner, iconColor: const Color(0xff2563EB)),
+              child: const FloatingIcon(iconData: Icons.qr_code_scanner, iconColor: Color(0xff2563EB)),
             ),
-            Positioned(
-              top: 246,
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 3300),
+              curve: Curves.easeInOut,
+              top: _isUp ? 245 : 255,
               left: 52,
-              child: FloatingIcon(iconData: Icons.confirmation_number, iconColor: const Color(0xff943700)),
+              child: const FloatingIcon(iconData: Icons.confirmation_number, iconColor: Color(0xff943700)),
             ),
-            Positioned(
-              top: 214,
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 3000),
+              curve: Curves.easeInOut,
+              top: _isUp ? 220 : 210,
               right: 46,
-              child: FloatingIcon(iconData: Icons.notifications, iconColor: const Color(0xff131B2E)),
+              child: const FloatingIcon(iconData: Icons.notifications, iconColor: Color(0xff131B2E)),
             ),
           ],
         ),
