@@ -84,7 +84,7 @@ class _LoginFormState extends State<LoginForm> {
             'Masuk dengan nomor HP untuk\nmengambil antrean, menerima\nnotifikasi, dan memantau giliranmu.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 15,
               fontWeight: FontWeight.w500,
               color: Color(0xff64748B),
               height: 1.5,
@@ -97,7 +97,7 @@ class _LoginFormState extends State<LoginForm> {
             child: Text(
               'Nomor HP',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff64748B),
               ),
@@ -140,7 +140,7 @@ class _LoginFormState extends State<LoginForm> {
                   const Text(
                     '+62',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff0F172A),
                     ),
