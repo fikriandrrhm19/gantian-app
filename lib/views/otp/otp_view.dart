@@ -4,6 +4,7 @@ import 'widgets/otp_header.dart';
 import 'widgets/otp_input_field.dart';
 import '../../components/custom_toast.dart';
 import '../welcome/welcome_view.dart';
+import '../home/home_view.dart';
 
 class OtpView extends StatelessWidget {
   final String phoneNumber;
@@ -30,6 +31,13 @@ class OtpView extends StatelessWidget {
         context: context,
         message: 'Selamat datang kembali',
         isSuccess: true,
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeView(),
+        ),
       );
       
     } else {

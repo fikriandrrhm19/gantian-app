@@ -3,6 +3,7 @@ import '../../components/gradient_background.dart';
 import '../../components/back_button_custom.dart';
 import '../../components/custom_toast.dart';
 import 'widgets/welcome_form.dart';
+import '../home/home_view.dart';
 
 class WelcomeView extends StatelessWidget {
   final String phoneNumber;
@@ -16,7 +17,12 @@ class WelcomeView extends StatelessWidget {
       isSuccess: true,
     );
 
-    // TODO: Langkah berikutnya adalah melakukan Navigator.pushReplacement ke HomeView
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const HomeView(),
+      ),
+    );
   }
 
   @override
