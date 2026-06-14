@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import '../../../components/primary_button.dart';
 
 class LoginForm extends StatefulWidget {
   final Function(String) onSubmitted;
@@ -200,42 +201,15 @@ class _LoginFormState extends State<LoginForm> {
           ],
           const SizedBox(height: 24),
 
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: _isValidInput
-                  ? () {
-                      FocusScope.of(context).unfocus();
-                      widget.onSubmitted(_phoneController.text);
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xff2563EB),
-                disabledBackgroundColor: const Color(
-                  0xff94A3B8,
-                ).withOpacity(0.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: _isValidInput ? 4 : 0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    'Lanjut',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward, color: Colors.white, size: 20),
-                ],
-              ),
-            ),
+          PrimaryButton(
+            text: 'Lanjut',
+            icon: Icons.arrow_forward,
+            onPressed: _isValidInput
+                ? () {
+                    FocusScope.of(context).unfocus();
+                    widget.onSubmitted(_phoneController.text);
+                  }
+                : null,
           ),
         ],
       ),

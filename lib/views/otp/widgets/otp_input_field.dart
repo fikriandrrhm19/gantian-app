@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
+import '../../../components/primary_button.dart';
 
 class OtpInputField extends StatefulWidget {
   final Function(String) onVerificationComplete;
@@ -195,36 +196,17 @@ class _OtpInputFieldState extends State<OtpInputField> {
           ),
           const SizedBox(height: 32),
 
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: _isButtonActive
-                  ? () {
-                      FocusScope.of(context).unfocus();
-                      
-                      String finalCode = "";
-                      for (var c in _controllers) { finalCode += c.text; }
-                      widget.onVerificationComplete(finalCode);
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xff2563EB),
-                disabledBackgroundColor: const Color(0xff94A3B8).withOpacity(0.5),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: _isButtonActive ? 4 : 0,
-              ),
-              child: const Text(
-                'Verifikasi',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+          PrimaryButton(
+            text: 'Verifikasi',
+            onPressed: _isButtonActive
+                ? () {
+                    FocusScope.of(context).unfocus();
+                    
+                    String finalCode = "";
+                    for (var c in _controllers) { finalCode += c.text; }
+                    widget.onVerificationComplete(finalCode);
+                  }
+                : null,
           ),
         ],
       ),
