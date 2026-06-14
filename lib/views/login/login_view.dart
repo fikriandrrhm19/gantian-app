@@ -3,6 +3,7 @@ import '../../components/gradient_background.dart';
 import 'widgets/login_illustration.dart';
 import 'widgets/login_form.dart';
 import 'widgets/login_footer.dart';
+import '../otp/otp_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -18,6 +19,13 @@ class _LoginViewState extends State<LoginView> {
       SnackBar(
         content: Text('Simulasi OTP dikirimkan ke: +62 $phoneNumber'),
         backgroundColor: const Color(0xff2563EB),
+      ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OtpView(phoneNumber: phoneNumber),
       ),
     );
   }
