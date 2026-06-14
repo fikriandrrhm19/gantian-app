@@ -4,6 +4,7 @@ import 'widgets/login_illustration.dart';
 import 'widgets/login_form.dart';
 import 'widgets/login_footer.dart';
 import '../otp/otp_view.dart';
+import '../../components/custom_toast.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -15,11 +16,10 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
 
   void _handleLoginSubmit(String phoneNumber) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Simulasi OTP dikirimkan ke: +62 $phoneNumber'),
-        backgroundColor: const Color(0xff2563EB),
-      ),
+    CustomToast.show(
+      context: context,
+      message: 'Kode verifikasi dikirim',
+      isSuccess: true,
     );
 
     Navigator.push(

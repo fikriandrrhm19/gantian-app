@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../components/gradient_background.dart';
 import 'widgets/otp_header.dart';
 import 'widgets/otp_input_field.dart';
+import '../../components/custom_toast.dart';
 
 class OtpView extends StatelessWidget {
   final String phoneNumber;
@@ -10,15 +11,25 @@ class OtpView extends StatelessWidget {
 
   void _handleOtpVerification(BuildContext context, String otpCode) {
     if (otpCode == "111111") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Verification Success! New User Detected.'), backgroundColor: Colors.green),
+      CustomToast.show(
+        context: context,
+        message: 'Verifikasi berhasil',
+        isSuccess: true,
       );
-      // TODO: Navigator.push ke WelcomeView
+      
+    } else if (otpCode == "123456") {
+      CustomToast.show(
+        context: context,
+        message: 'Selamat datang kembali',
+        isSuccess: true,
+      );
+      
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Verification Success! Welcome Back.'), backgroundColor: Colors.green),
+      CustomToast.show(
+        context: context,
+        message: 'Kode OTP tidak valid',
+        isSuccess: false,
       );
-      // TODO: Navigator.pushReplacement ke HomeView
     }
   }
 
