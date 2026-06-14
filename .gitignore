@@ -43,3 +43,21 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment Variables
+.env
+.env.*
+
+# Android Keystore & Signing Properties
+*.jks
+*.keystore
+key.properties
+android/key.properties
+
+# Firebase Configuration
+google-services.json
+GoogleService-Info.plist
+firebase.json
+
+# Flutter Plugins
+.flutter-plugins
