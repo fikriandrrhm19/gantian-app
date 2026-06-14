@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../components/back_button_custom.dart';
 
 class OtpHeader extends StatelessWidget {
   final String phoneNumber;
@@ -12,26 +13,9 @@ class OtpHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Align(
+          const Align(
             alignment: Alignment.centerLeft,
-            child: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.chevron_left, color: Color(0xff64748B), size: 24),
-                  SizedBox(width: 4),
-                  Text(
-                    'Kembali',
-                    style: TextStyle(
-                      color: Color(0xff64748B),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: BackButtonCustom(),
           ),
           const SizedBox(height: 30),
           
