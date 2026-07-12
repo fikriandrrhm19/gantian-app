@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'controllers/auth_controller.dart';
 import 'views/login/login_view.dart';
 
 void main() {
@@ -10,20 +12,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Gantian',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xffFAF8FF),
-        primaryColor: const Color(0xff2563EB),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xff2563EB),
-          primary: const Color(0xff2563EB),
-          secondary: const Color(0xff0057C2),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthController()),
+      ],
+      child: MaterialApp(
+        title: 'Gantian',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: const Color(0xffFAF8FF),
+          primaryColor: const Color(0xff2563EB),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xff2563EB),
+            primary: const Color(0xff2563EB),
+            secondary: const Color(0xff0057C2),
+          ),
+          fontFamily: 'Plus Jakarta Sans', 
         ),
-        fontFamily: 'Plus Jakarta Sans', 
+        home: const LoginView(),
       ),
-      home: const LoginView(),
     );
   }
 }
