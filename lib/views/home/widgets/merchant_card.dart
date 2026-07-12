@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../models/merchant_model.dart';
+import '../../merchant_detail/merchant_detail_view.dart';
 
 class MerchantCard extends StatelessWidget {
   final MerchantModel merchant;
@@ -175,7 +176,16 @@ class MerchantCard extends StatelessWidget {
               width: double.infinity,
               height: 48,
               child: TextButton(
-                onPressed: () {},
+                onPressed: isPaused
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MerchantDetailView(merchant: merchant),
+                          ),
+                        );
+                      },
                 style: TextButton.styleFrom(
                   backgroundColor: isPaused ? const Color(0xffF8FAFC) : const Color(0xff2563EB).withOpacity(0.05),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
