@@ -55,7 +55,6 @@ class _HomeViewState extends State<HomeView> {
             fontWeight: FontWeight.w500,
             fontFamily: 'Plus Jakarta Sans',
           ),
-
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
