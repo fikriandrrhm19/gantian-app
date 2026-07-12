@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/merchant_model.dart';
+import '../scan_qr/scan_qr_view.dart';
 
 class MerchantDetailView extends StatelessWidget {
   final MerchantModel merchant;
@@ -247,7 +248,12 @@ class MerchantDetailView extends StatelessWidget {
                                     ],
                             ),
                             child: ElevatedButton.icon(
-                              onPressed: isClosed || isPaused ? null : () {},
+                              onPressed: isClosed || isPaused ? null : () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const ScanQrView()),
+                                );
+                              },
                               icon: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 24),
                               label: const Text('Scan QR di Lokasi', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Plus Jakarta Sans')),
                               style: ElevatedButton.styleFrom(

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../controllers/auth_controller.dart';
 import '../../../controllers/merchant_controller.dart';
 import '../widgets/merchant_card.dart';
+import '../../scan_qr/scan_qr_view.dart';
 
 class BerandaTab extends StatefulWidget {
   const BerandaTab({super.key});
@@ -209,7 +210,12 @@ class _BerandaTabState extends State<BerandaTab> {
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ScanQrView()),
+                  );
+                },
                 borderRadius: BorderRadius.circular(16),
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24),
