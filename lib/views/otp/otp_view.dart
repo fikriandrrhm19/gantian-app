@@ -7,9 +7,7 @@ import '../welcome/welcome_view.dart';
 import '../home/home_view.dart';
 
 class OtpView extends StatelessWidget {
-  final String phoneNumber;
-
-  const OtpView({super.key, required this.phoneNumber});
+  const OtpView({super.key});
 
   void _handleOtpVerification(BuildContext context, String otpCode) {
     if (otpCode == "111111") {
@@ -22,7 +20,7 @@ class OtpView extends StatelessWidget {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => WelcomeView(phoneNumber: phoneNumber),
+          builder: (context) => const WelcomeView(),
         ),
       );
       
@@ -59,7 +57,7 @@ class OtpView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                OtpHeader(phoneNumber: phoneNumber),
+                const OtpHeader(),
                 const SizedBox(height: 40),
                 OtpInputField(
                   onVerificationComplete: (code) => _handleOtpVerification(context, code),

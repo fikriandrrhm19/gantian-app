@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../components/gradient_background.dart';
 import '../../components/back_button_custom.dart';
 import '../../components/custom_toast.dart';
 import 'widgets/welcome_form.dart';
 import '../home/home_view.dart';
+import '../../controllers/auth_controller.dart';
 
 class WelcomeView extends StatelessWidget {
-  final String phoneNumber;
-
-  const WelcomeView({super.key, required this.phoneNumber});
+  const WelcomeView({super.key});
 
   void _handleRegistrationSubmit(BuildContext context, String fullName) {
+    context.read<AuthController>().setFullName(fullName);
+
     CustomToast.show(
       context: context,
       message: 'Pendaftaran berhasil, selamat datang $fullName!',
@@ -47,7 +49,6 @@ class WelcomeView extends StatelessWidget {
                   const SizedBox(height: 31),
 
                   WelcomeForm(
-                    phoneNumber: phoneNumber,
                     onSubmitted: (name) => _handleRegistrationSubmit(context, name),
                   ),
                 ],

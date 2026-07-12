@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 import '../../../components/primary_button.dart';
+import '../../../controllers/auth_controller.dart';
 
 class WelcomeForm extends StatefulWidget {
-  final String phoneNumber;
   final Function(String) onSubmitted;
 
   const WelcomeForm({
     super.key,
-    required this.phoneNumber,
     required this.onSubmitted,
   });
 
@@ -29,6 +29,7 @@ class _WelcomeFormState extends State<WelcomeForm> {
   @override
   void dispose() {
     _nameController.dispose();
+    _errorTimer?.cancel();
     super.dispose();
   }
 
@@ -90,6 +91,7 @@ class _WelcomeFormState extends State<WelcomeForm> {
   Widget build(BuildContext context) {
     bool hasValidationError = _errorMessage.isNotEmpty && _nameController.text.isNotEmpty;
     bool showRedBorder = _isMaxLimitError || hasValidationError;
+    final phoneNumber = context.watch<AuthController>().phoneNumber;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -142,7 +144,7 @@ class _WelcomeFormState extends State<WelcomeForm> {
               border: Border.all(color: const Color(0xffE2E8F0), width: 1.5),
             ),
             child: Text(
-              _maskPhoneNumber(widget.phoneNumber),
+              _maskPhoneNumber(phoneNumber),
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,

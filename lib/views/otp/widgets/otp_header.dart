@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../components/back_button_custom.dart';
+import '../../../controllers/auth_controller.dart';
 
 class OtpHeader extends StatelessWidget {
-  final String phoneNumber;
-
-  const OtpHeader({super.key, required this.phoneNumber});
+  const OtpHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final phoneNumber = context.watch<AuthController>().phoneNumber;
+
     return Padding(
       padding: const EdgeInsets.only(top: 48.5, left: 24.0, right: 24.0),
       child: Column(

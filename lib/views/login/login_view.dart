@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../components/gradient_background.dart';
 import 'widgets/login_illustration.dart';
 import 'widgets/login_form.dart';
 import 'widgets/login_footer.dart';
 import '../otp/otp_view.dart';
 import '../../components/custom_toast.dart';
+import '../../controllers/auth_controller.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -16,6 +18,8 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
 
   void _handleLoginSubmit(String phoneNumber) {
+    context.read<AuthController>().setPhoneNumber(phoneNumber);
+
     CustomToast.show(
       context: context,
       message: 'Kode verifikasi dikirim',
@@ -25,7 +29,7 @@ class _LoginViewState extends State<LoginView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => OtpView(phoneNumber: phoneNumber),
+        builder: (context) => const OtpView(),
       ),
     );
   }
