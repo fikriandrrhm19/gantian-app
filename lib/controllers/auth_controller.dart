@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AuthController with ChangeNotifier {
-  String _phoneNumber = "";
-  String _fullName = "";
+  String _phoneNumber = "81234567890";
+  String _fullName = "Fikri";
 
   String get phoneNumber => _phoneNumber;
   String get fullName => _fullName;

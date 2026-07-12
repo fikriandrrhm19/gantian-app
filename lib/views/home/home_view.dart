@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../components/gradient_background.dart';
 import 'tabs/beranda_tab.dart';
 import 'tabs/antrean_tab.dart';
 import 'tabs/profil_tab.dart';
@@ -23,53 +22,75 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GradientBackground(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xffEFF6FF),
+              Color(0xffFFFFFF),
+              Color(0xffFFFFFF),
+            ],
+            stops: [0.0, 0.2, 1.0],
+          ),
+        ),
         child: SafeArea(
           child: _tabs[_currentIndex],
         ),
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
+          color: Colors.white,
           border: Border(
             top: BorderSide(color: Color(0xffF1F5F9), width: 1.0),
           ),
         ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: const Color(0xff2563EB),
-          unselectedItemColor: const Color(0xff94A3B8),
-          selectedLabelStyle: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Plus Jakarta Sans',
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'Plus Jakarta Sans',
-          ),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home), 
-              label: 'Beranda',
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(0, Icons.home, Icons.home_outlined, 'Beranda'),
+                _buildNavItem(1, Icons.list_alt, Icons.list_alt_outlined, 'Antrean Saya'),
+                _buildNavItem(2, Icons.person, Icons.perm_identity, 'Profil'),
+              ],
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.list_alt_outlined),
-              activeIcon: Icon(Icons.list_alt),
-              label: 'Antrean Saya',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(int index, IconData activeIcon, IconData inactiveIcon, String label) {
+    final bool isSelected = _currentIndex == index;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSelected ? activeIcon : inactiveIcon,
+              color: isSelected ? const Color(0xff2563EB) : const Color(0xff94A3B8),
+              size: 24,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.perm_identity),
-              activeIcon: Icon(Icons.person),
-              label: 'Profil',
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected ? const Color(0xff2563EB) : const Color(0xff94A3B8),
+                fontFamily: 'Plus Jakarta Sans',
+              ),
             ),
           ],
         ),

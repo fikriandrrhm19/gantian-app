@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import '../models/merchant_model.dart';
 
 class MerchantController with ChangeNotifier {
@@ -17,19 +15,45 @@ class MerchantController with ChangeNotifier {
     _errorMessage = "";
     notifyListeners();
 
-    final url = Uri.parse('https://6a3787eac105017aa6390a95.mockapi.io/merchant');
-
     try {
-      final response = await http.get(url);
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = jsonDecode(response.body);
-        _merchants = responseData.map((json) => MerchantModel.fromJson(json)).toList();
-      } else {
-        _errorMessage = "Gagal mengambil data dari server";
-      }
+      final List<Map<String, dynamic>> mockData = [
+        {
+          "id": "1",
+          "name": "Barbershop Pak Hendra",
+          "type": "Dago",
+          "status": "Buka",
+          "current_queue": "B-05",
+          "waiting_users": 8,
+          "estimated_time": "2j 40m",
+          "distance": 0.8
+        },
+        {
+          "id": "2",
+          "name": "Bengkel Maju Jaya",
+          "type": "Antapani",
+          "status": "Jeda",
+          "current_queue": "C-12",
+          "waiting_users": 3,
+          "estimated_time": "--",
+          "distance": 3.2
+        },
+        {
+          "id": "3",
+          "name": "Apotek Sehat Bersama",
+          "type": "Buah Batu",
+          "status": "Tutup",
+          "current_queue": "--",
+          "waiting_users": 0,
+          "estimated_time": "--",
+          "distance": 5.1
+        }
+      ];
+
+      _merchants = mockData.map((json) => MerchantModel.fromJson(json)).toList();
     } catch (error) {
-      _errorMessage = "Terjadi kesalahan jaringan, silakan coba lagi";
+      _errorMessage = "Terjadi kesalahan memuat data";
     } finally {
       _isLoading = false;
       notifyListeners();
