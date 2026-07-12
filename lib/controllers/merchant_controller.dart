@@ -1,0 +1,38 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../models/merchant_model.dart';
+
+class MerchantController with ChangeNotifier {
+  List<MerchantModel> _merchants = [];
+  bool _isLoading = false;
+  String _errorMessage = "";
+
+  List<MerchantModel> get merchants => _merchants;
+  bool get isLoading => _isLoading;
+  String get errorMessage => _errorMessage;
+
+  Future<void> fetchMerchants() async {
+    _isLoading = true;
+    _errorMessage = "";
+    notifyListeners();
+
+    final url = Uri.parse('https://6a3787eac105017aa6390a95.mockapi.io/merchant');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = jsonDecode(response.body);
+        _merchants = responseData.map((json) => MerchantModel.fromJson(json)).toList();
+      } else {
+        _errorMessage = "Gagal mengambil data dari server";
+      }
+    } catch (error) {
+      _errorMessage = "Terjadi kesalahan jaringan, silakan coba lagi";
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
