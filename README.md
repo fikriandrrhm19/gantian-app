@@ -8,7 +8,7 @@
 
 A mobile-first queue management app for Indonesian walk-in UMKM such as barbershops, workshops, salons, and local service counters.
 
-The current repository focuses on the authentication flow, user registration, reusable UI components, and the initial application shell.
+The platform streamlines physical waiting friction by allowing customers to join live digital queues on-site via QR code scanning, view real-time estimates, and receive smart lifecycle alerts.
 
 <p align="center">
   <img
@@ -26,35 +26,49 @@ Figma Design File: [Gantian Mobile Workspace](https://www.figma.com/design/4dznk
 * **Form Validation:** Input validation using RegEx constraints, character limits, and contextual error messaging.
 * **Reusable Components:** Shared UI elements such as `PrimaryButton`, `BackButtonCustom`, and toast notifications to maintain consistency across screens.
 * **Custom Toast Overlay:** Lightweight top-positioned notification component built with Flutter overlays.
-* **Application Shell:** HomeView with BottomNavigationBar and modular placeholders for future queue management features.
-* **Modular Screen Architecture:** Authentication, registration, and home modules organized into isolated feature directories.
-* **Interactive UI Elements:** Floating animations and subtle micro-interactions to improve user experience.
+* **Application Shell:** Unified `HomeView` utilizing a polished `BottomNavigationBar` to coordinate sub-tab navigation fragments gracefully.
+* **Interactive UI Elements:** Floating animations, responsive layout constraints, and a fluid animation controller driving pull-to-refresh skeleton shimmer effects.
+* **State-Driven Multi-Filtering:** Robust client-side multi-category filtering coupled with optimized query indexing for granular, real-time catalog discovery.
+* **Automated Background Synchronization:** Centralized event-driven polling loop ensuring cross-view data consistency between independent tab components without UI disruption.
 
-## Frontend Architecture
+## Core Core Platform Capabilities
 
-The project follows a modular Flutter structure that separates reusable UI components from screen-level views and navigation logic.
+* **REST API Integration:** Full integration with external endpoints to dynamically fetch, deserialize, and present real-time structured merchant catalogs and live ticket parameters.
+* **Persistent Session Management:** Native platform storage implementation caching critical identity markers and authentication records for secure automated auto-login loops.
+* **Hardware & System Tooling:** Integrated hardware engine for reactive camera-stream QR parsing alongside standalone background execution workers pushing automated proximity alerts.
+
+## Architectural Design Pattern
+
+The project enforces a strict **Model-View-Controller (MVC)** software architecture paired with unified **ChangeNotifier Providers** to ensure absolute Separation of Concerns (SoC), clean state state propagation, and clean maintenance paths.
 
 ### Technology Stack
 
 | Category | Technology |
 |----------|------------|
-| Framework | Flutter |
+| Framework | Flutter SDK |
 | Language | Dart |
-| UI System | Material 3 |
+| State Management | Provider Pattern |
+| Storage Interface | SharedPreferences API |
+| Peripheral Modules | Mobile Scanner Engine, Local Notifications Service |
 | Typography | Plus Jakarta Sans |
 
-### Directory Layout
+### Extended Directory Layout
 
 ```text
 lib/
-├── components/          # Shared reusable UI components
-├── views/
-│   ├── login/           # Authentication screens
-│   ├── otp/             # OTP verification flow
-│   ├── welcome/         # User registration
-│   └── home/            # Application shell
-│       └── tabs/        # Home, Queue, and Profile placeholders
-└── main.dart            # App entry point and theme configuration
+├── components/          # Reusable atom-level UI units & overlays
+├── controllers/         # MVC Controllers coordinating system state & API logic
+├── models/              # Immutable data blueprints and serialization structures
+├── services/            # Infrastructure drivers (Notifications, Native Handlers)
+└── views/
+    ├── login/           # Identity entry points
+    ├── otp/             # Verification matrices
+    ├── welcome/         # Onboarding modules
+    ├── scan_qr/         # Active camera capture interface
+    ├── merchant_detail/ # Dynamic profiles showing operational metrics
+    └── home/            # Core shell container
+        └── tabs/        # Isolated view layers (Beranda, Antrean, Profil)
+
 ```
 
 ## Getting Started
@@ -88,9 +102,9 @@ flutter run
 
 To simplify local testing, the current authentication flow uses predefined OTP values instead of a live authentication service.
 
-| OTP Code | Result                                                          |
-| -------- | --------------------------------------------------------------- |
-| `111111` | Simulates a new user and continues to registration              |
+| OTP Code | Result |
+| --- | --- |
+| `111111` | Simulates a new user and continues to registration |
 | `123456` | Simulates an existing user and opens the main application shell |
 
 This temporary behavior will be replaced by a production authentication service in a future release.
