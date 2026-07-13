@@ -22,6 +22,10 @@ class _WelcomeFormState extends State<WelcomeForm> {
   bool _isFocused = false;
   bool _isValidName = false;
 
+  bool _hasMinTwoWords = false;
+  bool _hasMinThreeCharsPerWord = false;
+  bool _isAlphaValid = true;
+
   String _errorMessage = "";
   bool _isMaxLimitError = false;
   Timer? _errorTimer;
@@ -34,8 +38,15 @@ class _WelcomeFormState extends State<WelcomeForm> {
   }
 
   void _validateName(String value) {
+    if (value.contains('  ')) {
+      _nameController.text = value.replaceAll('  ', ' ');
+      _nameController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _nameController.text.length),
+      );
+      return;
+    }
+
     final String cleanValue = value.trim();
-    
     final RegExp alphaRegex = RegExp(r"^[a-zA-Z\s']+$");
 
     if (value.length > 50) {
@@ -64,19 +75,31 @@ class _WelcomeFormState extends State<WelcomeForm> {
     }
 
     setState(() {
+      _errorMessage = "";
+
       if (cleanValue.isEmpty) {
-        _errorMessage = "";
+        _hasMinTwoWords = false;
+        _hasMinThreeCharsPerWord = false;
+        _isAlphaValid = true;
         _isValidName = false;
-      } else if (!alphaRegex.hasMatch(cleanValue)) {
+        return;
+      }
+
+      if (!alphaRegex.hasMatch(cleanValue)) {
+        _isAlphaValid = false;
         _errorMessage = "Nama hanya boleh berisi huruf alfabet";
         _isValidName = false;
-      } else if (cleanValue.length < 3 || !cleanValue.contains(' ')) {
-        _errorMessage = "Masukkan nama lengkap asli Anda (minimal 2 kata)";
-        _isValidName = false;
+        return;
       } else {
-        _errorMessage = "";
-        _isValidName = true;
+        _isAlphaValid = true;
       }
+
+      List<String> words = cleanValue.split(' ').where((w) => w.isNotEmpty).toList();
+
+      _hasMinTwoWords = words.length >= 2;
+      _hasMinThreeCharsPerWord = words.isNotEmpty && words.every((word) => word.length >= 3);
+
+      _isValidName = _hasMinTwoWords && _hasMinThreeCharsPerWord && _isAlphaValid;
     });
   }
 
@@ -87,10 +110,40 @@ class _WelcomeFormState extends State<WelcomeForm> {
     return '+62 $start •••• $end';
   }
 
+  Widget _buildValidationRule({required String text, required bool isValid, required bool hasInput}) {
+    Color textColor = !hasInput 
+        ? const Color(0xff64748B) 
+        : (isValid ? const Color(0xff16A34A) : const Color(0xffDC2626));
+    
+    IconData icon = isValid ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: textColor),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: textColor,
+              fontFamily: 'Plus Jakarta Sans',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool hasValidationError = _errorMessage.isNotEmpty && _nameController.text.isNotEmpty;
-    bool showRedBorder = _isMaxLimitError || hasValidationError;
+    bool hasInput = _nameController.text.isNotEmpty;
+    bool showRedBorder = _isMaxLimitError || 
+        (_errorMessage.isNotEmpty && hasInput) || 
+        (hasInput && (!_hasMinTwoWords || !_hasMinThreeCharsPerWord) && !_isFocused);
+        
     final phoneNumber = context.watch<AuthController>().phoneNumber;
 
     return Padding(
@@ -217,23 +270,39 @@ class _WelcomeFormState extends State<WelcomeForm> {
               ),
             ),
           ),
-          if (_errorMessage.isNotEmpty && _nameController.text.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: Text(
-                  _errorMessage,
-                  style: const TextStyle(
-                    color: Color(0xffBA1A1A),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (_errorMessage.isNotEmpty) ...[
+                  Text(
+                    _errorMessage,
+                    style: const TextStyle(
+                      color: Color(0xffBA1A1A),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Plus Jakarta Sans',
+                    ),
                   ),
-                ),
-              ),
+                  const SizedBox(height: 6),
+                ],
+                if (_isAlphaValid) ...[
+                  _buildValidationRule(
+                    text: 'Minimal terdiri dari 2 kata',
+                    isValid: _hasMinTwoWords,
+                    hasInput: hasInput,
+                  ),
+                  _buildValidationRule(
+                    text: 'Setiap kata minimal terdiri dari 3 karakter',
+                    isValid: _hasMinThreeCharsPerWord,
+                    hasInput: hasInput,
+                  ),
+                ],
+              ],
             ),
-          ],
+          ),
           const SizedBox(height: 32),
 
           PrimaryButton(
