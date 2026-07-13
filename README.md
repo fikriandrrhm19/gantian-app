@@ -14,7 +14,7 @@ The app focuses on a simple workflow. Users can register, access the main dashbo
   <img
     src="https://github.com/user-attachments/assets/ba5189b4-4dc5-4db3-aa6f-91d02923eaba"
     alt="Gantian App Demo"
-    width="15%"
+    width="35%"
   />
 </p>
 
@@ -97,8 +97,8 @@ Manual testing was performed on the following areas:
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/auth/01_login_view.png" alt="Phone number login screen" width="15%" />
-  <img src="docs/screenshots/auth/05_welcome_form_validation_checklist.png" alt="User onboarding form with real-time validation" width="15%" />
+  <img src="docs/screenshots/auth/01_login_view.png" alt="Phone number login screen" width="35%" />
+  <img src="docs/screenshots/auth/05_welcome_form_validation_checklist.png" alt="User onboarding form with real-time validation" width="35%" />
 </p>
 
 <p align="center">
@@ -108,8 +108,8 @@ Manual testing was performed on the following areas:
 <br>
 
 <p align="center">
-  <img src="docs/screenshots/main_dashboard/01_beranda_tab_merchant_list.png" alt="Merchant list on the Home tab" width="15%" />
-  <img src="docs/screenshots/main_dashboard/04_antrean_tab_active_status.png" alt="Active queue status on the Queue tab" width="15%" />
+  <img src="docs/screenshots/main_dashboard/01_beranda_tab_merchant_list.png" alt="Merchant list on the Home tab" width="35%" />
+  <img src="docs/screenshots/main_dashboard/04_antrean_tab_active_status.png" alt="Active queue status on the Queue tab" width="35%" />
 </p>
 
 <p align="center">
@@ -119,8 +119,8 @@ Manual testing was performed on the following areas:
 <br>
 
 <p align="center">
-  <img src="docs/screenshots/mobile_features/01_hardware_camera_scanner.png" alt="QR code scanner using the device camera" width="15%" />
-  <img src="docs/screenshots/mobile_features/02_custom_toast_banner.png" alt="Custom in-app toast notification banner" width="15%" />
+  <img src="docs/screenshots/mobile_features/01_hardware_camera_scanner.png" alt="QR code scanner using the device camera" width="35%" />
+  <img src="docs/screenshots/mobile_features/02_custom_toast_banner.png" alt="Custom in-app toast notification banner" width="35%" />
 </p>
 
 <p align="center">
@@ -130,7 +130,7 @@ Manual testing was performed on the following areas:
 <br>
 
 <p align="center">
-  <img src="docs/screenshots/mobile_features/03_hardware_local_notification.png" alt="Local notification displayed on the device" width="15%" />
+  <img src="docs/screenshots/mobile_features/03_hardware_local_notification.png" alt="Local notification displayed on the device" width="35%" />
 </p>
 
 <p align="center">
