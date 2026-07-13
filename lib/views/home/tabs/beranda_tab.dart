@@ -354,7 +354,7 @@ class _BerandaTabState extends State<BerandaTab> with SingleTickerProviderStateM
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.search, color: Color(0xff94A3B8), size: 15),
+                                  const Icon(Icons.search, color: Color(0xff94A3B8), size: 21),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: TextField(

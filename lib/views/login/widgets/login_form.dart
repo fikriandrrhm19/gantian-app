@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 import '../../../components/primary_button.dart';
+import '../../../controllers/auth_controller.dart';
 
 class LoginForm extends StatefulWidget {
   final Function(String) onSubmitted;
+  final bool isRequesting;
 
-  const LoginForm({super.key, required this.onSubmitted});
+  const LoginForm({
+    super.key, 
+    required this.onSubmitted,
+    required this.isRequesting,
+  });
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -17,9 +24,19 @@ class _LoginFormState extends State<LoginForm> {
 
   bool _isFocused = false;
   bool _isValidInput = false;
-  bool _isMaxLimitError = false; //
+  bool _isMaxLimitError = false;
 
   Timer? _errorTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    final savedPhone = context.read<AuthController>().phoneNumber;
+    if (savedPhone.isNotEmpty) {
+      _phoneController.text = savedPhone;
+      _validateInput(savedPhone);
+    }
+  }
 
   @override
   void dispose() {
@@ -116,7 +133,7 @@ class _LoginFormState extends State<LoginForm> {
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: widget.isRequesting ? const Color(0xffF8FAFC) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: _isMaxLimitError
@@ -157,6 +174,7 @@ class _LoginFormState extends State<LoginForm> {
                     child: TextField(
                       controller: _phoneController,
                       keyboardType: TextInputType.number,
+                      readOnly: widget.isRequesting,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(14),
@@ -170,10 +188,10 @@ class _LoginFormState extends State<LoginForm> {
                           fontWeight: FontWeight.w400,
                         ),
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xff0F172A),
+                        color: widget.isRequesting ? const Color(0xff94A3B8) : const Color(0xff0F172A),
                       ),
                     ),
                   ),
@@ -202,9 +220,9 @@ class _LoginFormState extends State<LoginForm> {
           const SizedBox(height: 24),
 
           PrimaryButton(
-            text: 'Lanjut',
-            icon: Icons.arrow_forward,
-            onPressed: _isValidInput
+            text: widget.isRequesting ? 'Memuat...' : 'Lanjut',
+            icon: widget.isRequesting ? null : Icons.arrow_forward,
+            onPressed: (_isValidInput && !widget.isRequesting)
                 ? () {
                     FocusScope.of(context).unfocus();
                     widget.onSubmitted(_phoneController.text);

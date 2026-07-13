@@ -7,10 +7,36 @@ class MerchantCard extends StatelessWidget {
 
   const MerchantCard({super.key, required this.merchant});
 
+  String _extractShortLocation(String fullAddress) {
+    String cleanAddress = fullAddress
+        .replaceAll(RegExp(r'^(Jl\.|Jalan|Istana Plaza)\s+', caseSensitive: false), '')
+        .trim();
+    
+    List<String> parts = cleanAddress.split(',');
+    if (parts.isEmpty) return 'Bandung';
+    
+    String mainStreet = parts[0].trim();
+    List<String> words = mainStreet.split(' ');
+    
+    List<String> resultWords = [];
+    String currentText = "";
+    
+    for (String word in words) {
+      resultWords.add(word);
+      currentText = resultWords.join(' ');
+      if (currentText.length >= 8) {
+        break;
+      }
+    }
+    
+    return currentText.isNotEmpty ? currentText : mainStreet;
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isClosed = merchant.status.toLowerCase() == 'tutup';
     final bool isPaused = merchant.status.toLowerCase() == 'jeda';
+    final String shortLocation = _extractShortLocation(merchant.address);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -48,9 +74,11 @@ class MerchantCard extends StatelessWidget {
                         fontFamily: 'Plus Jakarta Sans',
                       ),
                     ),
-                    const SizedBox(height: 1),
+                    const SizedBox(height: 2),
                     Text(
-                      '${merchant.type} • ${merchant.distance} km',
+                      '${merchant.type}  •  $shortLocation  •  ${merchant.distance} km',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
@@ -61,6 +89,7 @@ class MerchantCard extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(

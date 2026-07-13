@@ -65,12 +65,10 @@ class _LoginViewState extends State<LoginView> {
                   Column(
                     children: [
                       const LoginIllustration(),
-                      _isRequesting
-                          ? const Padding(
-                              padding: EdgeInsets.only(top: 40.0),
-                              child: CircularProgressIndicator(color: Color(0xff2563EB)),
-                            )
-                          : LoginForm(onSubmitted: _handleLoginSubmit),
+                      LoginForm(
+                        onSubmitted: _handleLoginSubmit,
+                        isRequesting: _isRequesting,
+                      ),
                     ],
                   ),
                   const LoginFooter(),

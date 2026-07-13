@@ -16,7 +16,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
   final TextEditingController _pinController = TextEditingController();
   final FocusNode _pinFocusNode = FocusNode();
   
-  int _secondsLeft = 42;
+  int _secondsLeft = 59;
   Timer? _countdownTimer;
   bool _canResend = false;
   bool _isButtonActive = false;
@@ -29,7 +29,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
 
   void _startCountdown() {
     setState(() {
-      _secondsLeft = 42;
+      _secondsLeft = 59;
       _canResend = false;
     });
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -60,7 +60,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
       width: 44,
-      height: 48,
+      height: 56,
       textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Color(0xff0F172A)),
       decoration: BoxDecoration(
         color: Colors.white,

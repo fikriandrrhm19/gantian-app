@@ -148,75 +148,87 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
     final queueProvider = context.watch<QueueController>();
     final merchantProvider = context.watch<MerchantController>();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: double.infinity,
-          height: 56,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          color: Colors.white,
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            'Antrean Saya',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xff131B2E),
-              fontFamily: 'Plus Jakarta Sans',
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xffEFF6FF),
+            Color(0xffFFFFFF),
+          ],
+          stops: [0.0, 1.0],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 56,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            color: Colors.white,
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Antrean Saya',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff131B2E),
+                fontFamily: 'Plus Jakarta Sans',
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
-          child: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(9999),
-              border: Border.all(color: const Color(0xffC3C6D7).withOpacity(0.50)),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _selectedTab = 0),
-                    child: Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: _selectedTab == 0 ? const Color(0xff2563EB) : Colors.transparent,
-                        borderRadius: BorderRadius.circular(9999),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Aktif',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: _selectedTab == 0 ? FontWeight.bold : FontWeight.w500,
-                          color: _selectedTab == 0 ? Colors.white : const Color(0xff434655),
-                          fontFamily: 'Plus Jakarta Sans',
+          Padding(
+            padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(9999),
+                border: Border.all(color: const Color(0xffC3C6D7).withOpacity(0.50)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedTab = 0),
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _selectedTab == 0 ? const Color(0xff2563EB) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(9999),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Aktif',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: _selectedTab == 0 ? FontWeight.bold : FontWeight.w500,
+                            color: _selectedTab == 0 ? Colors.white : const Color(0xff434655),
+                            fontFamily: 'Plus Jakarta Sans',
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => _selectedTab = 1),
-                    child: Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: _selectedTab == 1 ? const Color(0xff2563EB) : Colors.transparent,
-                        borderRadius: BorderRadius.circular(9999),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Riwayat',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: _selectedTab == 1 ? FontWeight.bold : FontWeight.w500,
-                          color: _selectedTab == 1 ? Colors.white : const Color(0xff434655),
-                          fontFamily: 'Plus Jakarta Sans',
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedTab = 1),
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: _selectedTab == 1 ? const Color(0xff2563EB) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(9999),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Riwayat',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: _selectedTab == 1 ? FontWeight.bold : FontWeight.w500,
+                            color: _selectedTab == 1 ? Colors.white : const Color(0xff434655),
+                            fontFamily: 'Plus Jakarta Sans',
                         ),
                       ),
                     ),
@@ -230,8 +242,9 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
           child: _selectedTab == 0
               ? _buildAktifTab(queueProvider, merchantProvider)
               : _buildRiwayatTab(queueProvider, merchantProvider),
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -254,7 +267,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
       (m) => queue.merchantId == m.id,
       orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: '', queues: []),
     );
-
+    
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       children: [
@@ -375,7 +388,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
                             child: Icon(
                               Icons.refresh, 
                               color: _isRefreshing ? const Color(0xff94A3B8) : const Color(0xff2563EB), 
-                              size: 18
+                              size: 21
                             ),
                           ),
                         ),
@@ -384,7 +397,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Center(
                 child: Text(
                   'Perkiraan dipanggil sekitar pukul ${queue.estimatedCallTime}',
@@ -434,11 +447,11 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 32),
         Center(
           child: Text(_timeAgoString, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xff94A3B8), fontFamily: 'Plus Jakarta Sans')),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 37.5),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
@@ -455,7 +468,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 45.5),
         SizedBox(
           width: double.infinity,
           height: 56,
@@ -466,7 +479,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
                 MaterialPageRoute(builder: (context) => MerchantDetailView(merchant: merchant)),
               );
             },
-            icon: const Icon(Icons.storefront, color: Color(0xff2563EB)),
+            icon: const Icon(Icons.storefront, color: Color(0xff2563EB), size: 24),
             label: const Text('Lihat Detail Bisnis', style: TextStyle(color: Color(0xff2563EB), fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Plus Jakarta Sans')),
             style: OutlinedButton.styleFrom(
               backgroundColor: Colors.white,
