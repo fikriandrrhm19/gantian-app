@@ -59,7 +59,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
     });
 
     if (state == AppLifecycleState.paused) {
-      _backgroundNotifyTimer = Timer.periodic(const Duration(minutes: 20), (timer) {
+      _backgroundNotifyTimer = Timer.periodic(const Duration(minutes: 5), (timer) {
         _triggerBackgroundNotification();
       });
     } else if (state == AppLifecycleState.resumed) {
@@ -229,19 +229,19 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
                             fontWeight: _selectedTab == 1 ? FontWeight.bold : FontWeight.w500,
                             color: _selectedTab == 1 ? Colors.white : const Color(0xff434655),
                             fontFamily: 'Plus Jakarta Sans',
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-        Expanded(
-          child: _selectedTab == 0
-              ? _buildAktifTab(queueProvider, merchantProvider)
-              : _buildRiwayatTab(queueProvider, merchantProvider),
+          Expanded(
+            child: _selectedTab == 0
+                ? _buildAktifTab(queueProvider, merchantProvider)
+                : _buildRiwayatTab(queueProvider, merchantProvider),
           ),
         ],
       ),
