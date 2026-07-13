@@ -24,19 +24,32 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xffEFF6FF),
-              Color(0xffFFFFFF),
-              Color(0xffFFFFFF),
-            ],
-            stops: [0.0, 0.2, 1.0],
-          ),
+          color: Colors.white,
         ),
-        child: SafeArea(
-          child: _tabs[_currentIndex],
+        child: Column(
+          children: [
+            Container(
+              height: MediaQuery.of(context).padding.top,
+              color: Colors.white,
+            ),
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xffEFF6FF),
+                      Color(0xffFFFFFF),
+                      Color(0xffFFFFFF),
+                    ],
+                    stops: [0.0, 0.2, 1.0],
+                  ),
+                ),
+                child: _tabs[_currentIndex],
+              ),
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: Container(

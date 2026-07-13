@@ -149,108 +149,90 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
     final queueProvider = context.watch<QueueController>();
     final merchantProvider = context.watch<MerchantController>();
 
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xffEFF6FF),
-              Color(0xffF8FBFF),
-              Color(0xffFFFFFF),
-            ],
-            stops: [0.0, 0.5, 1.0],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          height: 56,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          color: Colors.white,
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            'Antrean Saya',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xff131B2E),
+              fontFamily: 'Plus Jakarta Sans',
+            ),
           ),
         ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                height: 64,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                color: Colors.white,
-                alignment: Alignment.centerLeft,
-                child: const Text(
-                  'Antrean Saya',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff131B2E),
-                    fontFamily: 'Plus Jakarta Sans',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(9999),
-                    border: Border.all(color: const Color(0xffC3C6D7).withOpacity(0.50)),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => setState(() => _selectedTab = 0),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: _selectedTab == 0 ? const Color(0xff2563EB) : Colors.transparent,
-                              borderRadius: BorderRadius.circular(9999),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Aktif',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: _selectedTab == 0 ? FontWeight.bold : FontWeight.w500,
-                                color: _selectedTab == 0 ? Colors.white : const Color(0xff434655),
-                                fontFamily: 'Plus Jakarta Sans',
-                              ),
-                            ),
-                          ),
+        Padding(
+          padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(9999),
+              border: Border.all(color: const Color(0xffC3C6D7).withOpacity(0.50)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedTab = 0),
+                    child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: _selectedTab == 0 ? const Color(0xff2563EB) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(9999),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Aktif',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: _selectedTab == 0 ? FontWeight.bold : FontWeight.w500,
+                          color: _selectedTab == 0 ? Colors.white : const Color(0xff434655),
+                          fontFamily: 'Plus Jakarta Sans',
                         ),
                       ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => setState(() => _selectedTab = 1),
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: _selectedTab == 1 ? const Color(0xff2563EB) : Colors.transparent,
-                              borderRadius: BorderRadius.circular(9999),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Riwayat',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: _selectedTab == 1 ? FontWeight.bold : FontWeight.w500,
-                                color: _selectedTab == 1 ? Colors.white : const Color(0xff434655),
-                                fontFamily: 'Plus Jakarta Sans',
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: _selectedTab == 0
-                    ? _buildAktifTab(queueProvider, merchantProvider)
-                    : _buildRiwayatTab(queueProvider, merchantProvider),
-              ),
-            ],
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedTab = 1),
+                    child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: _selectedTab == 1 ? const Color(0xff2563EB) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(9999),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Riwayat',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: _selectedTab == 1 ? FontWeight.bold : FontWeight.w500,
+                          color: _selectedTab == 1 ? Colors.white : const Color(0xff434655),
+                          fontFamily: 'Plus Jakarta Sans',
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+        Expanded(
+          child: _selectedTab == 0
+              ? _buildAktifTab(queueProvider, merchantProvider)
+              : _buildRiwayatTab(queueProvider, merchantProvider),
+        ),
+      ],
     );
   }
 
