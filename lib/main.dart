@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/merchant_controller.dart';
+import 'controllers/queue_controller.dart';
 import 'views/home/home_view.dart';
 
 void main() {
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthController()),
         ChangeNotifierProvider(create: (_) => MerchantController()),
+        ChangeNotifierProvider(create: (_) => QueueController()),
       ],
       child: MaterialApp(
         title: 'Gantian',
