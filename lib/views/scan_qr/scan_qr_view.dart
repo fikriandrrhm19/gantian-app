@@ -59,111 +59,19 @@ class _ScanQrViewState extends State<ScanQrView> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          MobileScanner(
-            controller: _scannerController,
-            onDetect: _handleQrDetection,
-          ),
-          Container(
-            color: Colors.black.withOpacity(0.40),
-          ),
-          Center(
-            child: SizedBox(
-              width: 256,
-              height: 256,
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.white.withOpacity(0.50), width: 2),
-                    ),
-                  ),
-                  AnimatedBuilder(
-                    animation: _animation,
-                    builder: (context, child) {
-                      return Positioned(
-                        top: 256 * _animation.value,
-                        left: 2,
-                        right: 2,
-                        child: Container(
-                          height: 2,
-                          color: Colors.white.withOpacity(0.80),
-                        ),
-                      );
-                    },
-                  ),
-                  Positioned(
-                    top: -1,
-                    left: -1,
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          top: BorderSide(color: Colors.white, width: 4),
-                          left: BorderSide(color: Colors.white, width: 4),
-                        ),
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: -1,
-                    right: -1,
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          top: BorderSide(color: Colors.white, width: 4),
-                          right: BorderSide(color: Colors.white, width: 4),
-                        ),
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(8)),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: -1,
-                    left: -1,
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Colors.white, width: 4),
-                          left: BorderSide(color: Colors.white, width: 4),
-                        ),
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8)),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: -1,
-                    right: -1,
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Colors.white, width: 4),
-                          right: BorderSide(color: Colors.white, width: 4),
-                        ),
-                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            // Blok penahan tinggi status bar agar tidak mepet jam & baterai hp
+            Container(
+              height: MediaQuery.of(context).padding.top,
+              color: Colors.white,
             ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 64,
+            // Header Top Bar yang konsisten dengan halaman lain
+            Container(
+              width: double.infinity,
+              height: 56,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -188,74 +96,178 @@ class _ScanQrViewState extends State<ScanQrView> with SingleTickerProviderStateM
                 ],
               ),
             ),
-          ),
-          Positioned(
-            bottom: 112,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xffE2E8F0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
+            // Area Kamera Scanner dan Kotak Target
+            Expanded(
+              child: Stack(
+                children: [
+                  MobileScanner(
+                    controller: _scannerController,
+                    onDetect: _handleQrDetection,
+                  ),
+                  Container(
+                    color: Colors.black.withOpacity(0.40),
+                  ),
+                  Center(
+                    child: SizedBox(
+                      width: 256,
+                      height: 256,
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(color: Colors.white.withOpacity(0.50), width: 2),
+                            ),
+                          ),
+                          AnimatedBuilder(
+                            animation: _animation,
+                            builder: (context, child) {
+                              return Positioned(
+                                top: 256 * _animation.value,
+                                left: 2,
+                                right: 2,
+                                child: Container(
+                                  height: 2,
+                                  color: Colors.white.withOpacity(0.80),
+                                ),
+                              );
+                            },
+                          ),
+                          Positioned(
+                            top: -1,
+                            left: -1,
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  top: BorderSide(color: Colors.white, width: 4),
+                                  left: BorderSide(color: Colors.white, width: 4),
+                                ),
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(8)),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: -1,
+                            right: -1,
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  top: BorderSide(color: Colors.white, width: 4),
+                                  right: BorderSide(color: Colors.white, width: 4),
+                                ),
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(8)),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: -1,
+                            left: -1,
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(color: Colors.white, width: 4),
+                                  left: BorderSide(color: Colors.white, width: 4),
+                                ),
+                                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8)),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: -1,
+                            right: -1,
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(color: Colors.white, width: 4),
+                                  right: BorderSide(color: Colors.white, width: 4),
+                                ),
+                                borderRadius: BorderRadius.only(bottomRight: Radius.circular(8)),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      CustomToast.show(
-                        context: context,
-                        message: 'Posisikan QR Code fisik merchant di dalam kotak untuk mengambil antrean.',
-                        isSuccess: true,
-                      );
-                    },
-                    icon: const Icon(Icons.info_outline, color: Color(0xff2563EB), size: 20),
-                  ),
-                ),
-                const SizedBox(width: 72),
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xffE2E8F0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      _scannerController.toggleTorch();
-                      setState(() {
-                        _isFlashOn = !_isFlashOn;
-                      });
-                    },
-                    icon: Icon(
-                      _isFlashOn ? Icons.flashlight_off_outlined : Icons.flashlight_on_outlined,
-                      color: const Color(0xff2563EB),
-                      size: 20,
                     ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    bottom: 112,
+                    left: 0,
+                    right: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xffE2E8F0)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 2,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              CustomToast.show(
+                                context: context,
+                                message: 'Posisikan QR Code fisik merchant di dalam kotak untuk mengambil antrean.',
+                                isSuccess: true,
+                              );
+                            },
+                            icon: const Icon(Icons.info_outline, color: Color(0xff2563EB), size: 20),
+                          ),
+                        ),
+                        const SizedBox(width: 72),
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xffE2E8F0)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 2,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              _scannerController.toggleTorch();
+                              setState(() {
+                                _isFlashOn = !_isFlashOn;
+                              });
+                            },
+                            icon: Icon(
+                              _isFlashOn ? Icons.flashlight_off_outlined : Icons.flashlight_on_outlined,
+                              color: const Color(0xff2563EB),
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
