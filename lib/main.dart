@@ -3,9 +3,13 @@ import 'package:provider/provider.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/merchant_controller.dart';
 import 'controllers/queue_controller.dart';
+import 'services/notification_service.dart';
 import 'views/home/home_view.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.initialize();
+  await NotificationService.requestPermission();
   runApp(const MyApp());
 }
 

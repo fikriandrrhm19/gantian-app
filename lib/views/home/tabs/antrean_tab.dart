@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../controllers/merchant_controller.dart';
 import '../../../controllers/queue_controller.dart';
 import '../../../models/merchant_model.dart';
+import '../../../services/notification_service.dart';
 import '../../merchant_detail/merchant_detail_view.dart';
 
 class AntreanTab extends StatefulWidget {
@@ -13,35 +14,65 @@ class AntreanTab extends StatefulWidget {
   State<AntreanTab> createState() => _AntreanTabState();
 }
 
-class _AntreanTabState extends State<AntreanTab> {
+class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
   int _selectedTab = 0;
   DateTime? _lastFetchTime;
   Timer? _secondsTimer;
-  Timer? _autoRenewTimer;
+  Timer? _uiRenewTimer;
+  Timer? _backgroundNotifyTimer;
   String _timeAgoString = 'Memuat...';
+  AppLifecycleState _notificationState = AppLifecycleState.resumed;
+  double _turns = 0.0;
+  bool _isRefreshing = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    WidgetsBinding.instance.addObserver(this);
+    
+    final queueCtx = context.read<QueueController>();
+    if (queueCtx.queues.isEmpty) {
+      _silentFetchData();
+    } else {
+      _lastFetchTime = DateTime.now();
+      _updateTimeString();
+    }
     
     _secondsTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _updateTimeString();
     });
 
-    _autoRenewTimer = Timer.periodic(const Duration(minutes: 2), (timer) {
-      _fetchData();
+    _uiRenewTimer = Timer.periodic(const Duration(minutes: 2), (timer) {
+      _silentFetchData();
     });
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _secondsTimer?.cancel();
-    _autoRenewTimer?.cancel();
+    _uiRenewTimer?.cancel();
+    _backgroundNotifyTimer?.cancel();
     super.dispose();
   }
 
-  void _fetchData() {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _notificationState = state;
+    });
+
+    if (state == AppLifecycleState.paused) {
+      _backgroundNotifyTimer = Timer.periodic(const Duration(minutes: 20), (timer) {
+        _triggerBackgroundNotification();
+      });
+    } else if (state == AppLifecycleState.resumed) {
+      _backgroundNotifyTimer?.cancel();
+      _silentFetchData();
+    }
+  }
+
+  void _silentFetchData() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await context.read<QueueController>().fetchQueues();
       await context.read<MerchantController>().fetchMerchants();
@@ -52,6 +83,50 @@ class _AntreanTabState extends State<AntreanTab> {
         });
       }
     });
+  }
+
+  void _manualRefreshData() async {
+    if (_isRefreshing) return;
+    
+    setState(() {
+      _isRefreshing = true;
+      _turns += 1.0; 
+    });
+
+    await context.read<QueueController>().fetchQueues();
+    await context.read<MerchantController>().fetchMerchants();
+
+    if (mounted) {
+      setState(() {
+        _lastFetchTime = DateTime.now();
+        _isRefreshing = false;
+        _updateTimeString();
+      });
+    }
+  }
+
+  void _triggerBackgroundNotification() async {
+    final queueCtx = context.read<QueueController>();
+    final merchantCtx = context.read<MerchantController>();
+
+    await queueCtx.fetchQueues();
+    await merchantCtx.fetchMerchants();
+
+    if (_notificationState == AppLifecycleState.paused && queueCtx.activeQueues.isNotEmpty) {
+      final activeQueue = queueCtx.activeQueues.first;
+      final associatedMerchant = merchantCtx.merchants.firstWhere(
+        (m) => activeQueue.merchantId == m.id,
+        orElse: () => MerchantModel(id: '', name: 'Merchant', type: '', status: '', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0),
+      );
+
+      if (associatedMerchant.id.isNotEmpty) {
+        await NotificationService.showInstantNotification(
+          id: activeQueue.id.hashCode,
+          title: 'Pengingat Antrean: ${associatedMerchant.name}',
+          body: 'Nomor Anda ${activeQueue.userNumber}. Saat ini melayani ${associatedMerchant.currentQueue}. Sisa antrean: ${activeQueue.peopleAhead} orang.',
+        );
+      }
+    }
   }
 
   void _updateTimeString() {
@@ -168,13 +243,9 @@ class _AntreanTabState extends State<AntreanTab> {
                 ),
               ),
               Expanded(
-                child: queueProvider.isLoading || merchantProvider.isLoading
-                    ? const Center(child: CircularProgressIndicator(color: Color(0xff2563EB)))
-                    : queueProvider.errorMessage.isNotEmpty
-                        ? Center(child: Text(queueProvider.errorMessage, style: const TextStyle(color: Color(0xffBA1A1A), fontWeight: FontWeight.w500)))
-                        : _selectedTab == 0
-                            ? _buildAktifTab(queueProvider, merchantProvider)
-                            : _buildRiwayatTab(queueProvider, merchantProvider),
+                child: _selectedTab == 0
+                    ? _buildAktifTab(queueProvider, merchantProvider)
+                    : _buildRiwayatTab(queueProvider, merchantProvider),
               ),
             ],
           ),
@@ -185,6 +256,9 @@ class _AntreanTabState extends State<AntreanTab> {
 
   Widget _buildAktifTab(QueueController queueCtx, MerchantController merchantCtx) {
     final activeList = queueCtx.activeQueues;
+    if (activeList.isEmpty && queueCtx.isLoading) {
+      return const Center(child: CircularProgressIndicator(color: Color(0xff2563EB)));
+    }
     if (activeList.isEmpty) {
       return const Center(
         child: Text(
@@ -307,8 +381,17 @@ class _AntreanTabState extends State<AntreanTab> {
                         color: Colors.transparent,
                         child: InkWell(
                           customBorder: const CircleBorder(),
-                          onTap: _fetchData,
-                          child: const Icon(Icons.refresh, color: Color(0xff2563EB), size: 18),
+                          onTap: _manualRefreshData,
+                          child: AnimatedRotation(
+                            turns: _turns,
+                            duration: const Duration(milliseconds: 600),
+                            curve: Curves.easeInOut,
+                            child: Icon(
+                              Icons.refresh, 
+                              color: _isRefreshing ? const Color(0xff94A3B8) : const Color(0xff2563EB), 
+                              size: 18
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -412,6 +495,9 @@ class _AntreanTabState extends State<AntreanTab> {
 
   Widget _buildRiwayatTab(QueueController queueCtx, MerchantController merchantCtx) {
     final historyList = queueCtx.historyQueues;
+    if (historyList.isEmpty && queueCtx.isLoading) {
+      return const Center(child: CircularProgressIndicator(color: Color(0xff2563EB)));
+    }
     if (historyList.isEmpty) {
       return const Center(
         child: Text(
