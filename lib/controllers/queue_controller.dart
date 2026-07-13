@@ -1,6 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import '../controllers/merchant_controller.dart';
 import '../models/queue_model.dart';
 
 class QueueController with ChangeNotifier {
@@ -18,32 +17,20 @@ class QueueController with ChangeNotifier {
   List<QueueModel> get historyQueues => 
       _queues.where((q) => q.queueStatus.toLowerCase() != 'aktif').toList();
 
+  void updateQueuesFromMerchants(MerchantController merchantController) {
+    _isLoading = merchantController.isLoading;
+    _errorMessage = merchantController.errorMessage;
+    
+    List<QueueModel> tempQueues = [];
+    for (var merchant in merchantController.merchants) {
+      tempQueues.addAll(merchant.queues);
+    }
+    
+    _queues = tempQueues;
+    notifyListeners();
+  }
+
   Future<void> fetchQueues() async {
-    if (_queues.isEmpty) {
-      _isLoading = true;
-      _errorMessage = "";
-      notifyListeners();
-    }
-
-    final url = Uri.parse('https://6a53d48b8547b9f7111bd6ee.mockapi.io/api/v1/queues');
-
-    try {
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = jsonDecode(response.body);
-        _queues = responseData.map((json) => QueueModel.fromJson(json)).toList();
-        _errorMessage = "";
-      } else {
-        _errorMessage = "Gagal memuat data antrean";
-      }
-    } catch (error) {
-      if (_queues.isEmpty) {
-        _errorMessage = "Terjadi kesalahan jaringan, periksa koneksi Anda";
-      }
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+    return;
   }
 }

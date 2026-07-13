@@ -40,9 +40,13 @@ class _MyAppState extends State<MyApp> {
 
   void _startGlobalDataSync(BuildContext context) {
     _globalSyncTimer?.cancel();
-    _globalSyncTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      context.read<QueueController>().fetchQueues();
-      context.read<MerchantController>().fetchMerchants();
+    _globalSyncTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
+      final merchantCtx = context.read<MerchantController>();
+      await merchantCtx.fetchMerchants();
+      
+      if (context.mounted) {
+        context.read<QueueController>().updateQueuesFromMerchants(merchantCtx);
+      }
     });
   }
 

@@ -1,3 +1,5 @@
+import 'queue_model.dart';
+
 class MerchantModel {
   final String id;
   final String name;
@@ -8,6 +10,7 @@ class MerchantModel {
   final String estimatedTime;
   final double distance;
   final String address;
+  final List<QueueModel> queues;
 
   MerchantModel({
     required this.id,
@@ -19,9 +22,13 @@ class MerchantModel {
     required this.estimatedTime,
     required this.distance,
     required this.address,
+    required this.queues,
   });
 
   factory MerchantModel.fromJson(Map<String, dynamic> json) {
+    var queueList = json['queues'] as List? ?? [];
+    List<QueueModel> parsedQueues = queueList.map((q) => QueueModel.fromJson(q)).toList();
+
     return MerchantModel(
       id: json['id'] as String,
       name: json['name'] as String,
@@ -32,6 +39,7 @@ class MerchantModel {
       estimatedTime: json['estimated_time'] as String,
       distance: (json['distance'] as num).toDouble(),
       address: json['address'] as String? ?? "Jl. Ir. H. Djuanda, Bandung",
+      queues: parsedQueues,
     );
   }
 }

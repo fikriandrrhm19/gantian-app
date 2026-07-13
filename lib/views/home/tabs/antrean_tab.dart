@@ -41,7 +41,6 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
     _secondsTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _updateTimeString();
     });
-
   }
 
   @override
@@ -71,9 +70,10 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
 
   void _silentFetchData() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<QueueController>().fetchQueues();
-      await context.read<MerchantController>().fetchMerchants();
+      final merchantCtx = context.read<MerchantController>();
+      await merchantCtx.fetchMerchants();
       if (mounted) {
+        context.read<QueueController>().updateQueuesFromMerchants(merchantCtx);
         setState(() {
           _lastFetchTime = DateTime.now();
           _updateTimeString();
@@ -90,10 +90,11 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
       _turns += 1.0; 
     });
 
-    await context.read<QueueController>().fetchQueues();
-    await context.read<MerchantController>().fetchMerchants();
+    final merchantCtx = context.read<MerchantController>();
+    await merchantCtx.fetchMerchants();
 
     if (mounted) {
+      context.read<QueueController>().updateQueuesFromMerchants(merchantCtx);
       setState(() {
         _lastFetchTime = DateTime.now();
         _isRefreshing = false;
@@ -106,14 +107,15 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
     final queueCtx = context.read<QueueController>();
     final merchantCtx = context.read<MerchantController>();
 
-    await queueCtx.fetchQueues();
     await merchantCtx.fetchMerchants();
+    if (!mounted) return;
+    queueCtx.updateQueuesFromMerchants(merchantCtx);
 
     if (_notificationState == AppLifecycleState.paused && queueCtx.activeQueues.isNotEmpty) {
       final activeQueue = queueCtx.activeQueues.first;
       final associatedMerchant = merchantCtx.merchants.firstWhere(
         (m) => activeQueue.merchantId == m.id,
-        orElse: () => MerchantModel(id: '', name: 'Merchant', type: '', status: '', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: ''),
+        orElse: () => MerchantModel(id: '', name: 'Merchant', type: '', status: '', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: '', queues: []),
       );
 
       if (associatedMerchant.id.isNotEmpty) {
@@ -250,7 +252,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
     final queue = activeList.first;
     final merchant = merchantCtx.merchants.firstWhere(
       (m) => queue.merchantId == m.id,
-      orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: ''),
+      orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: '', queues: []),
     );
 
     return ListView(
@@ -498,7 +500,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
         final queue = historyList[index];
         final merchant = merchantCtx.merchants.firstWhere(
           (m) => queue.merchantId == m.id,
-          orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: ''),
+          orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: '', queues: []),
         );
 
         final bool isSuccess = queue.queueStatus.toLowerCase() == 'selesai';
