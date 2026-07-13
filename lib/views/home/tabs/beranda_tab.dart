@@ -422,7 +422,13 @@ class _BerandaTabState extends State<BerandaTab> with SingleTickerProviderStateM
                         children: [
                           const Text('Bisnis Terdekat', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xff0F172A), fontFamily: 'Plus Jakarta Sans', height: 1.5)),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              setState(() {
+                                _searchController.clear();
+                                _searchQuery = "";
+                                _selectedCategories.clear();
+                              });
+                            },
                             child: const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               child: Text('Lihat Semua', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xff2563EB), fontFamily: 'Plus Jakarta Sans', height: 1.33)),
