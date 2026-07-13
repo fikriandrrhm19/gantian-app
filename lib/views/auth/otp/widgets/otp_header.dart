@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../components/back_button_custom.dart';
-import '../../../controllers/auth_controller.dart';
+import '../../../../components/back_button_custom.dart';
+import '../../../../controllers/auth_controller.dart';
 
 class OtpHeader extends StatelessWidget {
   const OtpHeader({super.key});

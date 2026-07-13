@@ -5,7 +5,7 @@ import '../../../controllers/merchant_controller.dart';
 import '../../../controllers/queue_controller.dart';
 import '../../../models/merchant_model.dart';
 import '../../../services/notification_service.dart';
-import '../../merchant_detail/merchant_detail_view.dart';
+import '../../mobile_features/merchant_detail/merchant_detail_view.dart';
 
 class AntreanTab extends StatefulWidget {
   const AntreanTab({super.key});

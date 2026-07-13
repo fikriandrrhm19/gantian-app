@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'dart:async';
-import '../../../components/primary_button.dart';
+import '../../../../components/primary_button.dart';
 
 class OtpInputField extends StatefulWidget {
   final Function(String) onVerificationComplete;

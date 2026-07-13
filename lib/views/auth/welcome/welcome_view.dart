@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../components/gradient_background.dart';
-import '../../components/back_button_custom.dart';
-import '../../components/custom_toast.dart';
+import '../../../components/gradient_background.dart';
+import '../../../components/back_button_custom.dart';
+import '../../../components/custom_toast.dart';
 import 'widgets/welcome_form.dart';
-import '../home/home_view.dart';
-import '../../controllers/auth_controller.dart';
+import '../../main_dashboard/home_view.dart';
+import '../../../controllers/auth_controller.dart';
 
 class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});

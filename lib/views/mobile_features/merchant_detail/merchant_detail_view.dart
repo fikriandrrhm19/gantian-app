@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../controllers/merchant_controller.dart';
-import '../../models/merchant_model.dart';
+import '../../../controllers/merchant_controller.dart';
+import '../../../models/merchant_model.dart';
 import '../scan_qr/scan_qr_view.dart';
 
 class MerchantDetailView extends StatefulWidget {

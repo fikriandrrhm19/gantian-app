@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
-import '../../../components/primary_button.dart';
-import '../../../controllers/auth_controller.dart';
+import '../../../../components/primary_button.dart';
+import '../../../../controllers/auth_controller.dart';
 
 class LoginForm extends StatefulWidget {
   final Function(String) onSubmitted;

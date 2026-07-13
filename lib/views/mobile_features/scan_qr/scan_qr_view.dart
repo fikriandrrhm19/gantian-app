@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import '../../components/custom_toast.dart';
+import '../../../components/custom_toast.dart';
 
 class ScanQrView extends StatefulWidget {
   const ScanQrView({super.key});

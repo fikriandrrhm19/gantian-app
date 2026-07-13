@@ -6,7 +6,8 @@ import 'controllers/auth_controller.dart';
 import 'controllers/merchant_controller.dart';
 import 'controllers/queue_controller.dart';
 import 'services/notification_service.dart';
-import 'views/home/home_view.dart';
+import 'views/main_dashboard/home_view.dart';
+import 'views/auth/login/login_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,7 +75,18 @@ class _MyAppState extends State<MyApp> {
               ),
               fontFamily: 'Plus Jakarta Sans', 
             ),
-            home: const HomeView(),
+            home: Consumer<AuthController>(
+              builder: (context, auth, _) {
+                if (!auth.isInitialized) {
+                  return const Scaffold(
+                    body: Center(
+                      child: CircularProgressIndicator(color: Color(0xff2563EB)),
+                    ),
+                  );
+                }
+                return auth.isLoggedIn ? const HomeView() : const LoginView();
+              },
+            ),
           );
         },
       ),

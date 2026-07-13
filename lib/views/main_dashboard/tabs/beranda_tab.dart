@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../controllers/auth_controller.dart';
 import '../../../controllers/merchant_controller.dart';
 import '../../../models/merchant_model.dart';
-import '../widgets/merchant_card.dart';
-import '../../scan_qr/scan_qr_view.dart';
+import 'widgets/merchant_card.dart';
+import '../../mobile_features/scan_qr/scan_qr_view.dart';
 
 class BerandaTab extends StatefulWidget {
   const BerandaTab({super.key});

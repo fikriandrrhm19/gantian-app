@@ -112,3 +112,4 @@ This temporary behavior will be replaced by a production authentication service 
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+

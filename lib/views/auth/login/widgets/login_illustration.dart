@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../components/floating_icon.dart';
+import '../../../../components/floating_icon.dart';
 import 'dart:async';
 
 class LoginIllustration extends StatefulWidget {

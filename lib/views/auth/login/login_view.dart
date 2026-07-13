@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../components/gradient_background.dart';
+import '../../../components/gradient_background.dart';
 import 'widgets/login_illustration.dart';
 import 'widgets/login_form.dart';
 import 'widgets/login_footer.dart';
 import '../otp/otp_view.dart';
-import '../../components/custom_toast.dart';
-import '../../controllers/auth_controller.dart';
+import '../../../components/custom_toast.dart';
+import '../../../controllers/auth_controller.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});

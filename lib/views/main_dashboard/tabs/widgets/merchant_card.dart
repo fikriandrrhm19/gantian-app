@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../models/merchant_model.dart';
-import '../../merchant_detail/merchant_detail_view.dart';
+import '../../../../models/merchant_model.dart';
+import '../../../mobile_features/merchant_detail/merchant_detail_view.dart';
 
 class MerchantCard extends StatelessWidget {
   final MerchantModel merchant;
