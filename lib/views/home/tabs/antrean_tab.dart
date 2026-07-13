@@ -42,9 +42,6 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
       _updateTimeString();
     });
 
-    _uiRenewTimer = Timer.periodic(const Duration(minutes: 2), (timer) {
-      _silentFetchData();
-    });
   }
 
   @override
@@ -116,7 +113,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
       final activeQueue = queueCtx.activeQueues.first;
       final associatedMerchant = merchantCtx.merchants.firstWhere(
         (m) => activeQueue.merchantId == m.id,
-        orElse: () => MerchantModel(id: '', name: 'Merchant', type: '', status: '', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0),
+        orElse: () => MerchantModel(id: '', name: 'Merchant', type: '', status: '', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: ''),
       );
 
       if (associatedMerchant.id.isNotEmpty) {
@@ -253,7 +250,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
     final queue = activeList.first;
     final merchant = merchantCtx.merchants.firstWhere(
       (m) => queue.merchantId == m.id,
-      orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0),
+      orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: ''),
     );
 
     return ListView(
@@ -293,15 +290,20 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
                           children: [
                             const Icon(Icons.location_on_outlined, size: 14, color: Color(0xff434655)),
                             const SizedBox(width: 4),
-                            Text(
-                              '${merchant.type}, Bandung',
-                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xff434655), fontFamily: 'Plus Jakarta Sans'),
+                            Expanded(
+                              child: Text(
+                                merchant.address,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Color(0xff434655), fontFamily: 'Plus Jakarta Sans'),
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
@@ -496,7 +498,7 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
         final queue = historyList[index];
         final merchant = merchantCtx.merchants.firstWhere(
           (m) => queue.merchantId == m.id,
-          orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0),
+          orElse: () => MerchantModel(id: '', name: 'Unknown Business', type: 'Unknown', status: 'Tutup', currentQueue: '--', waitingUsers: 0, estimatedTime: '--', distance: 0.0, address: ''),
         );
 
         final bool isSuccess = queue.queueStatus.toLowerCase() == 'selesai';
@@ -535,15 +537,20 @@ class _AntreanTabState extends State<AntreanTab> with WidgetsBindingObserver {
                           children: [
                             const Icon(Icons.location_on_outlined, size: 16, color: Color(0xff434655)),
                             const SizedBox(width: 4),
-                            Text(
-                              '${merchant.type}, Bandung',
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xff434655), fontFamily: 'Plus Jakarta Sans'),
+                            Expanded(
+                              child: Text(
+                                merchant.address,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xff434655), fontFamily: 'Plus Jakarta Sans'),
+                              ),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(

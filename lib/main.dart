@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +22,29 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Timer? _globalSyncTimer;
+
+  @override
+  void dispose() {
+    _globalSyncTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startGlobalDataSync(BuildContext context) {
+    _globalSyncTimer?.cancel();
+    _globalSyncTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      context.read<QueueController>().fetchQueues();
+      context.read<MerchantController>().fetchMerchants();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +54,25 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MerchantController()),
         ChangeNotifierProvider(create: (_) => QueueController()),
       ],
-      child: MaterialApp(
-        title: 'Gantian',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          scaffoldBackgroundColor: const Color(0xffFAF8FF),
-          primaryColor: const Color(0xff2563EB),
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xff2563EB),
-            primary: const Color(0xff2563EB),
-            secondary: const Color(0xff0057C2),
-          ),
-          fontFamily: 'Plus Jakarta Sans', 
-        ),
-        home: const HomeView(),
+      child: Builder(
+        builder: (context) {
+          _startGlobalDataSync(context);
+          return MaterialApp(
+            title: 'Gantian',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              scaffoldBackgroundColor: const Color(0xffFAF8FF),
+              primaryColor: const Color(0xff2563EB),
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xff2563EB),
+                primary: const Color(0xff2563EB),
+                secondary: const Color(0xff0057C2),
+              ),
+              fontFamily: 'Plus Jakarta Sans', 
+            ),
+            home: const HomeView(),
+          );
+        },
       ),
     );
   }

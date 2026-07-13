@@ -1,14 +1,93 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../controllers/merchant_controller.dart';
 import '../../models/merchant_model.dart';
 import '../scan_qr/scan_qr_view.dart';
 
-class MerchantDetailView extends StatelessWidget {
+class MerchantDetailView extends StatefulWidget {
   final MerchantModel merchant;
 
   const MerchantDetailView({super.key, required this.merchant});
 
   @override
+  State<MerchantDetailView> createState() => _MerchantDetailViewState();
+}
+
+class _MerchantDetailViewState extends State<MerchantDetailView> {
+  Timer? _autoRefreshTimer;
+  Timer? _secondsTimer;
+  DateTime _lastFetchTime = DateTime.now();
+  String _timeAgoString = "Terakhir diperbarui baru saja";
+  bool _isManualRefreshing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    _autoRefreshTimer = Timer.periodic(const Duration(minutes: 2), (timer) {
+      _fetchLatestData();
+    });
+
+    _secondsTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateTimeString();
+    });
+  }
+
+  @override
+  void dispose() {
+    _autoRefreshTimer?.cancel();
+    _secondsTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _fetchLatestData() async {
+    await context.read<MerchantController>().fetchMerchants();
+    if (mounted) {
+      setState(() {
+        _lastFetchTime = DateTime.now();
+        _updateTimeString();
+      });
+    }
+  }
+
+  Future<void> _triggerManualRefresh() async {
+    if (_isManualRefreshing) return;
+    setState(() {
+      _isManualRefreshing = true;
+    });
+
+    await _fetchLatestData();
+
+    if (mounted) {
+      setState(() {
+        _isManualRefreshing = false;
+      });
+    }
+  }
+
+  void _updateTimeString() {
+    final diff = DateTime.now().difference(_lastFetchTime);
+    setState(() {
+      if (diff.inSeconds < 5) {
+        _timeAgoString = 'Terakhir diperbarui baru saja';
+      } else if (diff.inSeconds < 60) {
+        _timeAgoString = 'Terakhir diperbarui ${diff.inSeconds} detik lalu';
+      } else {
+        _timeAgoString = 'Terakhir diperbarui ${diff.inMinutes} menit lalu';
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final merchantProvider = context.watch<MerchantController>();
+    
+    final merchant = merchantProvider.merchants.firstWhere(
+      (m) => m.id == widget.merchant.id,
+      orElse: () => widget.merchant,
+    );
+
     final bool isClosed = merchant.status.toLowerCase() == 'tutup';
     final bool isPaused = merchant.status.toLowerCase() == 'jeda';
 
@@ -19,12 +98,10 @@ class MerchantDetailView extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // Container buatan untuk mewarnai area status bar menjadi putih murni
             Container(
               height: MediaQuery.of(context).padding.top,
               color: Colors.white,
             ),
-            // Isi utama halaman detail bisnis
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
@@ -231,37 +308,34 @@ class MerchantDetailView extends StatelessWidget {
                           const SizedBox(height: 24),
                           Column(
                             children: [
-                              SizedBox(
-                                width: double.infinity,
-                                height: 56,
+                              WidgetVisibilityWrapper(
+                                visible: !isClosed && !isPaused,
                                 child: Container(
+                                  width: double.infinity,
+                                  height: 56,
+                                  margin: const EdgeInsets.only(bottom: 12),
                                   decoration: BoxDecoration(
-                                    gradient: isClosed || isPaused
-                                        ? null
-                                        : const LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [Color(0xff2563EB), Color(0xff1D4ED8)],
-                                          ),
-                                    color: isClosed || isPaused ? const Color(0xffE2E8F0) : null,
+                                    gradient: const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [Color(0xff2563EB), Color(0xff1D4ED8)],
+                                    ),
                                     borderRadius: BorderRadius.circular(16),
-                                    boxShadow: isClosed || isPaused
-                                        ? []
-                                        : [
-                                            BoxShadow(
-                                              color: const Color(0xffBFDBFE).withOpacity(0.5),
-                                              blurRadius: 6,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                            BoxShadow(
-                                              color: const Color(0xffBFDBFE).withOpacity(0.5),
-                                              blurRadius: 15,
-                                              offset: const Offset(0, 10),
-                                            ),
-                                          ],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xffBFDBFE).withOpacity(0.5),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                      BoxShadow(
+                                        color: const Color(0xffBFDBFE).withOpacity(0.5),
+                                        blurRadius: 15,
+                                        offset: const Offset(0, 10),
+                                      ),
+                                    ],
                                   ),
                                   child: ElevatedButton.icon(
-                                    onPressed: isClosed || isPaused ? null : () {
+                                    onPressed: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) => const ScanQrView()),
@@ -277,7 +351,6 @@ class MerchantDetailView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 12),
                               SizedBox(
                                 width: double.infinity,
                                 height: 56,
@@ -346,7 +419,10 @@ class MerchantDetailView extends StatelessWidget {
                                         children: [
                                           const Text('ALAMAT', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1, color: Color(0xff94A3B8), fontFamily: 'Plus Jakarta Sans')),
                                           const SizedBox(height: 2),
-                                          Text('Jl. Ir. H. Djuanda No. 120, ${merchant.type}, Bandung', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xff0F172A), fontFamily: 'Plus Jakarta Sans')),
+                                          Text(
+                                            merchant.address,
+                                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xff0F172A), fontFamily: 'Plus Jakarta Sans'),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -359,17 +435,29 @@ class MerchantDetailView extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('Terakhir diperbarui 2 menit lalu', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xff94A3B8), fontFamily: 'Plus Jakarta Sans')),
+                              Text(_timeAgoString, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xff94A3B8), fontFamily: 'Plus Jakarta Sans')),
                               const SizedBox(width: 8),
                               const Text('•', style: TextStyle(color: Color(0xffE2E8F0))),
                               const SizedBox(width: 8),
                               GestureDetector(
-                                onTap: () {},
-                                child: const Row(
+                                onTap: _triggerManualRefresh,
+                                child: Row(
                                   children: [
-                                    Icon(Icons.refresh, color: Color(0xff2563EB), size: 16),
-                                    SizedBox(width: 4),
-                                    Text('Perbarui Status', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xff2563EB), fontFamily: 'Plus Jakarta Sans')),
+                                    _isManualRefreshing
+                                        ? const SizedBox(
+                                            width: 12,
+                                            height: 12,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: Color(0xff2563EB),
+                                            ),
+                                          )
+                                        : const Icon(Icons.refresh, color: Color(0xff2563EB), size: 16),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      _isManualRefreshing ? 'Memuat...' : 'Perbarui Status',
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xff2563EB), fontFamily: 'Plus Jakarta Sans'),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -386,5 +474,21 @@ class MerchantDetailView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class WidgetVisibilityWrapper extends StatelessWidget {
+  final bool visible;
+  final Widget child;
+
+  const WidgetVisibilityWrapper({
+    super.key,
+    required this.visible,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return visible ? child : const SizedBox.shrink();
   }
 }

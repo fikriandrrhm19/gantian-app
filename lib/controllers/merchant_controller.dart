@@ -13,9 +13,11 @@ class MerchantController with ChangeNotifier {
   String get errorMessage => _errorMessage;
 
   Future<void> fetchMerchants() async {
-    _isLoading = true;
-    _errorMessage = "";
-    notifyListeners();
+    if (_merchants.isEmpty) {
+      _isLoading = true;
+      _errorMessage = "";
+      notifyListeners();
+    }
 
     final url = Uri.parse('https://6a53d48b8547b9f7111bd6ee.mockapi.io/api/v1/merchants');
 
@@ -25,11 +27,14 @@ class MerchantController with ChangeNotifier {
       if (response.statusCode == 200) {
         final List<dynamic> responseData = jsonDecode(response.body);
         _merchants = responseData.map((json) => MerchantModel.fromJson(json)).toList();
+        _errorMessage = "";
       } else {
         _errorMessage = "Gagal mengambil data dari server";
       }
     } catch (error) {
-      _errorMessage = "Terjadi kesalahan jaringan, silakan coba lagi";
+      if (_merchants.isEmpty) {
+        _errorMessage = "Terjadi kesalahan jaringan, silakan coba lagi";
+      }
     } finally {
       _isLoading = false;
       notifyListeners();

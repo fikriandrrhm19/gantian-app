@@ -7,6 +7,7 @@ class MerchantModel {
   final int waitingUsers;
   final String estimatedTime;
   final double distance;
+  final String address;
 
   MerchantModel({
     required this.id,
@@ -17,6 +18,7 @@ class MerchantModel {
     required this.waitingUsers,
     required this.estimatedTime,
     required this.distance,
+    required this.address,
   });
 
   factory MerchantModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class MerchantModel {
       waitingUsers: json['waiting_users'] as int,
       estimatedTime: json['estimated_time'] as String,
       distance: (json['distance'] as num).toDouble(),
+      address: json['address'] as String? ?? "Jl. Ir. H. Djuanda, Bandung",
     );
   }
 }

@@ -19,9 +19,11 @@ class QueueController with ChangeNotifier {
       _queues.where((q) => q.queueStatus.toLowerCase() != 'aktif').toList();
 
   Future<void> fetchQueues() async {
-    _isLoading = true;
-    _errorMessage = "";
-    notifyListeners();
+    if (_queues.isEmpty) {
+      _isLoading = true;
+      _errorMessage = "";
+      notifyListeners();
+    }
 
     final url = Uri.parse('https://6a53d48b8547b9f7111bd6ee.mockapi.io/api/v1/queues');
 
@@ -31,11 +33,14 @@ class QueueController with ChangeNotifier {
       if (response.statusCode == 200) {
         final List<dynamic> responseData = jsonDecode(response.body);
         _queues = responseData.map((json) => QueueModel.fromJson(json)).toList();
+        _errorMessage = "";
       } else {
         _errorMessage = "Gagal memuat data antrean";
       }
     } catch (error) {
-      _errorMessage = "Terjadi kesalahan jaringan, periksa koneksi Anda";
+      if (_queues.isEmpty) {
+        _errorMessage = "Terjadi kesalahan jaringan, periksa koneksi Anda";
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
