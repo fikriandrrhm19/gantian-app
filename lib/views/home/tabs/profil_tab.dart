@@ -79,7 +79,7 @@ class ProfilTab extends StatelessWidget {
                           Text(
                             authController.fullName.isNotEmpty
                                 ? authController.fullName
-                                : 'Fikri Andra Irham',
+                                : 'User',
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,

@@ -7,24 +7,45 @@ import 'widgets/welcome_form.dart';
 import '../home/home_view.dart';
 import '../../controllers/auth_controller.dart';
 
-class WelcomeView extends StatelessWidget {
+class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});
 
-  void _handleRegistrationSubmit(BuildContext context, String fullName) {
-    context.read<AuthController>().setFullName(fullName);
+  @override
+  State<WelcomeView> createState() => _WelcomeViewState();
+}
 
-    CustomToast.show(
-      context: context,
-      message: 'Pendaftaran berhasil, selamat datang $fullName!',
-      isSuccess: true,
-    );
+class _WelcomeViewState extends State<WelcomeView> {
+  bool _isRegistering = false;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const HomeView(),
-      ),
-    );
+  void _handleRegistrationSubmit(BuildContext context, String fullName) async {
+    if (_isRegistering) return;
+
+    setState(() {
+      _isRegistering = true;
+    });
+
+    final authCtx = context.read<AuthController>();
+    bool isSuccess = await authCtx.registerUser(fullName);
+
+    setState(() {
+      _isRegistering = false;
+    });
+
+    if (mounted) {
+      if (isSuccess) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeView()),
+          (route) => false,
+        );
+      } else {
+        CustomToast.show(
+          context: context,
+          message: authCtx.errorMessage.isNotEmpty ? authCtx.errorMessage : 'Pendaftaran gagal',
+          isSuccess: false,
+        );
+      }
+    }
   }
 
   @override
@@ -47,10 +68,14 @@ class WelcomeView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 31),
-
-                  WelcomeForm(
-                    onSubmitted: (name) => _handleRegistrationSubmit(context, name),
-                  ),
+                  _isRegistering
+                      ? const Padding(
+                          padding: EdgeInsets.only(top: 40.0),
+                          child: Center(child: CircularProgressIndicator(color: Color(0xff2563EB))),
+                        )
+                      : WelcomeForm(
+                          onSubmitted: (name) => _handleRegistrationSubmit(context, name),
+                        ),
                 ],
               ),
             ),

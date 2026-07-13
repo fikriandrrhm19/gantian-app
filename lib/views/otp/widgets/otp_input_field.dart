@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:pinput/pinput.dart';
 import 'dart:async';
 import '../../../components/primary_button.dart';
 
@@ -13,8 +13,8 @@ class OtpInputField extends StatefulWidget {
 }
 
 class _OtpInputFieldState extends State<OtpInputField> {
-  final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  final TextEditingController _pinController = TextEditingController();
+  final FocusNode _pinFocusNode = FocusNode();
   
   int _secondsLeft = 42;
   Timer? _countdownTimer;
@@ -51,131 +51,55 @@ class _OtpInputFieldState extends State<OtpInputField> {
   @override
   void dispose() {
     _countdownTimer?.cancel();
-    for (int i = 0; i < 6; i++) {
-      _controllers[i].dispose();
-      _focusNodes[i].dispose();
-    }
+    _pinController.dispose();
+    _pinFocusNode.dispose();
     super.dispose();
-  }
-
-  void _checkOtpStatus() {
-    String otpCode = "";
-    for (var controller in _controllers) {
-      otpCode += controller.text;
-    }
-    setState(() {
-      _isButtonActive = otpCode.length == 6;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final defaultPinTheme = PinTheme(
+      width: 44,
+      height: 48,
+      textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Color(0xff0F172A)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xffE2E8F0), width: 1.5),
+      ),
+    );
+
+    final focusedPinTheme = defaultPinTheme.copyWith(
+      decoration: defaultPinTheme.decoration!.copyWith(
+        border: Border.all(color: const Color(0xff2563EB), width: 2.0),
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(6, (index) {
-              return KeyboardListener(
-                focusNode: FocusNode(), 
-                onKeyEvent: (KeyEvent event) {
-                  if (event is KeyDownEvent && 
-                      event.logicalKey == LogicalKeyboardKey.backspace) {
-                    if (_controllers[index].text.isEmpty && index > 0) {
-                      _focusNodes[index - 1].requestFocus();
-                    }
-                  }
-                },
-                child: SizedBox(
-                  width: 44,
-                  child: TextField(
-                    controller: _controllers[index],
-                    focusNode: _focusNodes[index],
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    showCursor: false,
-                    enableInteractiveSelection: true,
-                    style: const TextStyle(
-                      fontSize: 22, 
-                      fontWeight: FontWeight.w700, 
-                      color: Color(0xff0F172A)
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-
-                    onTap: () {
-                      if (_controllers[index].text.isNotEmpty) {
-                        _controllers[index].selection = TextSelection(
-                          baseOffset: 0,
-                          extentOffset: _controllers[index].text.length,
-                        );
-                      }
-                    },
-                    onChanged: (value) {
-                      final String cleanValue = value.trim();
-
-                      if (cleanValue.length > 1 && cleanValue.length <= 6) {
-                        for (var controller in _controllers) {
-                          controller.clear();
-                        }
-                        for (int i = 0; i < cleanValue.length; i++) {
-                          if (i < 6) _controllers[i].text = cleanValue[i];
-                        }
-                        _focusNodes[cleanValue.length - 1].requestFocus();
-                        _checkOtpStatus();
-                        return;
-                      }
-
-                      if (cleanValue.isNotEmpty) {
-                        if (cleanValue.length > 1) {
-                          String lastChar = cleanValue.substring(cleanValue.length - 1);
-                          _controllers[index].text = lastChar;
-                        }
-
-                        _controllers[index].selection = TextSelection(
-                          baseOffset: 0,
-                          extentOffset: _controllers[index].text.length,
-                        );
-
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (index < 5 && _focusNodes[index].hasFocus) {
-                            _focusNodes[index + 1].requestFocus();
-                          }
-                        });
-                      }
-                      _checkOtpStatus();
-                    },
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
-                      filled: true,
-                      fillColor: Colors.white,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: Color(0xffE2E8F0), width: 1.5),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: const BorderSide(color: Color(0xff2563EB), width: 2.0),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
+          Pinput(
+            length: 6,
+            controller: _pinController,
+            focusNode: _pinFocusNode,
+            defaultPinTheme: defaultPinTheme,
+            focusedPinTheme: focusedPinTheme,
+            onChanged: (value) {
+              setState(() {
+                _isButtonActive = value.length == 6;
+              });
+            },
+            onCompleted: (pin) {
+              widget.onVerificationComplete(pin);
+            },
           ),
           const SizedBox(height: 23),
-          
           Column(
             children: [
               const Text(
                 'Tidak menerima kode?',
-                style: TextStyle(
-                  color: Color(0xff64748B), 
-                  fontSize: 13, 
-                  fontWeight: FontWeight.w500
-                ),
+                style: TextStyle(color: Color(0xff64748B), fontSize: 13, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 6),
               GestureDetector(
@@ -195,16 +119,12 @@ class _OtpInputFieldState extends State<OtpInputField> {
             ],
           ),
           const SizedBox(height: 32),
-
           PrimaryButton(
             text: 'Verifikasi',
             onPressed: _isButtonActive
                 ? () {
                     FocusScope.of(context).unfocus();
-                    
-                    String finalCode = "";
-                    for (var c in _controllers) { finalCode += c.text; }
-                    widget.onVerificationComplete(finalCode);
+                    widget.onVerificationComplete(_pinController.text);
                   }
                 : null,
           ),

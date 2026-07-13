@@ -16,22 +16,38 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  bool _isRequesting = false;
 
-  void _handleLoginSubmit(String phoneNumber) {
-    context.read<AuthController>().setPhoneNumber(phoneNumber);
+  void _handleLoginSubmit(String phoneNumber) async {
+    if (_isRequesting) return;
 
-    CustomToast.show(
-      context: context,
-      message: 'Kode verifikasi dikirim',
-      isSuccess: true,
-    );
+    setState(() {
+      _isRequesting = true;
+    });
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const OtpView(),
-      ),
-    );
+    final authCtx = context.read<AuthController>();
+    bool isExistingUser = await authCtx.checkPhoneNumber(phoneNumber);
+
+    setState(() {
+      _isRequesting = false;
+    });
+
+    if (mounted) {
+      if (authCtx.errorMessage.isNotEmpty) {
+        CustomToast.show(
+          context: context,
+          message: authCtx.errorMessage,
+          isSuccess: false,
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpView(isExistingUser: isExistingUser),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -49,7 +65,12 @@ class _LoginViewState extends State<LoginView> {
                   Column(
                     children: [
                       const LoginIllustration(),
-                      LoginForm(onSubmitted: _handleLoginSubmit),
+                      _isRequesting
+                          ? const Padding(
+                              padding: EdgeInsets.only(top: 40.0),
+                              child: CircularProgressIndicator(color: Color(0xff2563EB)),
+                            )
+                          : LoginForm(onSubmitted: _handleLoginSubmit),
                     ],
                   ),
                   const LoginFooter(),
