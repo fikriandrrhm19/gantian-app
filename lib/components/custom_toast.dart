@@ -7,64 +7,63 @@ class CustomToast {
     required bool isSuccess,
   }) {
     final overlayState = Overlay.of(context);
-    
     late OverlayEntry overlayEntry;
-    
+
     overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: 60,
-        left: 24,
-        right: 24,
+        top: MediaQuery.of(context).padding.top + 12,
+        left: 16,
+        right: 16,
         child: Material(
           color: Colors.transparent,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: isSuccess ? const Color(0xff10B981) : const Color(0xffEF4444),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                )
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: isSuccess 
-                        ? const Color(0xffEFF6FF) 
-                        : const Color(0xffFEF2F2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    isSuccess ? Icons.check_circle : Icons.cancel,
-                    color: isSuccess ? const Color(0xff2563EB) : const Color(0xffEF4444),
-                    size: 22,
-                  ),
+          child: TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.0, end: 1.0),
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOutBack,
+            builder: (context, value, child) {
+              return Transform.translate(
+                offset: Offset(0, (1 - value) * -20),
+                child: Opacity(
+                  opacity: value.clamp(0.0, 1.0),
+                  child: child,
                 ),
-                const SizedBox(width: 12),
-                
-                Expanded(
-                  child: Text(
-                    message,
-                    style: const TextStyle(
-                      color: Color(0xff0F172A),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Plus Jakarta Sans',
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: isSuccess ? const Color(0xffF0FDF4) : const Color(0xffFEF2F2),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xff0F172A).withOpacity(0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    isSuccess ? Icons.check_circle_rounded : Icons.error_rounded,
+                    color: isSuccess ? const Color(0xff16A34A) : const Color(0xffDC2626),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      message,
+                      style: TextStyle(
+                        color: isSuccess ? const Color(0xff15803D) : const Color(0xff991B1B),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Plus Jakarta Sans',
+                        height: 1.3,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -73,7 +72,7 @@ class CustomToast {
 
     overlayState.insert(overlayEntry);
 
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(const Duration(milliseconds: 3000), () {
       overlayEntry.remove();
     });
   }

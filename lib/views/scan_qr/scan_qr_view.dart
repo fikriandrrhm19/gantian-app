@@ -63,12 +63,10 @@ class _ScanQrViewState extends State<ScanQrView> with SingleTickerProviderStateM
         color: Colors.white,
         child: Column(
           children: [
-            // Blok penahan tinggi status bar agar tidak mepet jam & baterai hp
             Container(
               height: MediaQuery.of(context).padding.top,
               color: Colors.white,
             ),
-            // Header Top Bar yang konsisten dengan halaman lain
             Container(
               width: double.infinity,
               height: 56,
@@ -96,7 +94,6 @@ class _ScanQrViewState extends State<ScanQrView> with SingleTickerProviderStateM
                 ],
               ),
             ),
-            // Area Kamera Scanner dan Kotak Target
             Expanded(
               child: Stack(
                 children: [
